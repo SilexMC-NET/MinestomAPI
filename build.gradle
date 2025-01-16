@@ -1,0 +1,52 @@
+plugins {
+    id("java")
+    id("java-library")
+    id("maven-publish")
+    id("com.gradleup.shadow") version "9.0.0-beta4"
+}
+
+base {
+    group         =  "net.silexmc"
+    version       =  "$minestom_version"
+    archivesName  =  "MinestomAPI"
+}
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(21)
+    }
+
+    withSourcesJar()
+    withJavadocJar()
+}
+
+publishing {
+    publications {
+        maven(MavenPublication) {
+            from components.java
+        }
+    }
+}
+
+repositories {
+    // Maven
+    mavenCentral()
+}
+
+dependencies {
+    // Libs
+    api("com.google.guava:guava:$guava_version")
+    api("org.yaml:snakeyaml:$snakeyaml_version")
+    api("net.minestom:minestom-snapshots:$minestom_version")
+    api("net.kyori:adventure-text-minimessage:$minimessage_version")
+}
+
+tasks {
+    shadowJar {
+        archiveClassifier.set("")
+    }
+
+    build {
+        finalizedBy(shadowJar)
+    }
+}
